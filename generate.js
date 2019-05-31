@@ -1,24 +1,50 @@
-const liczby = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-let licznik;
-
-const tablica = [
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-];
+const grid = [];
+let numberList = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+let filled = false;
 
 /**
- * Miesza liczby w tablicy
- * @param {int[]} a Tablica liczb
- * @return {int[]} Pomieszana tablica liczb
+ * Initializes an empty (filled with 0s) 9x9 grid
+ * Tworzy pustą (wypełnioną zerami) tablicę 9x9
  */
-function mieszaj(a) {
+function initGrid() {
+  for (i = 0; i < 9; i++) {
+    grid.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
+  }
+}
+/**
+ * Checks if the grid is filled
+ * Sprawdza czy tablica została wypełniona
+ * @return {boolean} Is the grid filled?
+ * @return {boolean} Czy została wypełniona?
+ */
+function checkGrid() {
+  // For every row
+  // Dla każdego wiersza
+  for (let row = 0; row < 9; row++) {
+    // For every column
+    // Dla każdej kolumny
+    for (let col = 0; col < 9; col++) {
+      // Are any cells empty (0'ed)?
+      // Czy są jakieś puste komórki?
+      if (grid[row][col] == 0) {
+        return false;
+      }
+    }
+  }
+  filled = true;
+  return true;
+}
+
+/**
+ * (Fisher-Yates shuffle algorithm)
+ * Shuffles array in place
+ * Miesza wartości w tabeli
+ * @param {Array} a An array containing the items \
+ * Tablica z elementami do pomieszania
+ * @return {Array} Shuffled array
+ * @return {Array} Tablica z pomieszanymi elementami
+ */
+function shuffle(a) {
   let j; let x; let i;
   for (i = a.length - 1; i > 0; i--) {
     j = Math.floor(Math.random() * (i + 1));
@@ -28,254 +54,72 @@ function mieszaj(a) {
   }
   return a;
 }
-/**
- * Zwraca tablicę liczb danego zakresu
- * @param {int} start Początek zakresu
- * @param {int} koniec Koniec zakresu
- * @return {Array} Tablica liczb w danym zakresie
- */
-function zakres(start, koniec) {
-  return Array(koniec - start + 1).fill().map((_, idx) => start + idx);
-}
 
 /**
- * Sprawdza czy sudoku jest pełna
- * @param {int[]} tablica Tablica sudoku
- * @return {boolean} Czy tablica jest wypełniona
+ * Fills the grid recursevily
+ * Rekursywnie wypełnia tablicę
+ * @return {boolean}
  */
-function sprawdz(tablica) {
-  for (rzad = 0; rzad < 9; rzad++) {
-    for (kol = 0; kol < 9; kol++) {
-      if (tablica[rzad][kol] == 0) {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
-/**
- * Sprawdza czy sudoku da się rozwiązać
- * @param {int[]} tablica Tablica sudoku
- */
-function rozwiaz(tablica) {
-  for (i = 0; i < 81; i++) {
-    rzad = Math.floor(i / 9);
-    kol = i % 9;
-    if (tablica[rzad][kol] == 0) {
-      try {
-        zakres(1, 9).forEach(function() {
-          if (!tablica[rzad].includes(wartosc)) {
-            // eslint-disable-next-line max-len
-            if (!tablica[0][rzad].includes(wartosc) && !tablica[1][rzad].includes(wartosc) && !tablica[2][rzad].includes(wartosc) && !tablica[3][rzad].includes(wartosc) && !tablica[4][rzad].includes(wartosc) && !tablica[5][rzad].includes(wartosc) && !tablica[6][rzad].includes(wartosc) && !tablica[7][rzad].includes(wartosc) && !tablica[8][rzad].includes(wartosc)) {
-              kwadrat = [];
-              if (rzad < 3) {
-                if (kol < 3) {
-                  zakres(0, 2).forEach(function() {
-                    kwadrat = [tablica[j][0]];
-                    kwadrat.push(tablica[j][1]);
-                    kwadrat.push(tablica[j][2]);
-                  }, j);
-                } else if (kol < 6) {
-                  zakres(0, 2).forEach(function() {
-                    kwadrat = [tablica[j][3]];
-                    kwadrat.push(tablica[j][4]);
-                    kwadrat.push(tablica[j][5]);
-                  }, j);
-                } else {
-                  zakres(0, 2).forEach(function() {
-                    kwadrat = [tablica[j][6]];
-                    kwadrat.push(tablica[j][7]);
-                    kwadrat.push(tablica[j][8]);
-                  }, j);
-                }
-              } else if (rzad < 6) {
-                if (kol < 3) {
-                  zakres(3, 5).forEach(function() {
-                    kwadrat = [tablica[j][0]];
-                    kwadrat.push(tablica[j][1]);
-                    kwadrat.push(tablica[j][2]);
-                  }, j);
-                } else if (kol < 6) {
-                  zakres(3, 5).forEach(function() {
-                    kwadrat = [tablica[j][3]];
-                    kwadrat.push(tablica[j][4]);
-                    kwadrat.push(tablica[j][5]);
-                  }, j);
-                } else {
-                  zakres(3, 5).forEach(function() {
-                    kwadrat = [tablica[j][6]];
-                    kwadrat.push(tablica[j][7]);
-                    kwadrat.push(tablica[j][8]);
-                  }, j);
-                }
-              } else {
-                if (kol < 3) {
-                  zakres(6, 8).forEach(function() {
-                    kwadrat = [tablica[j][0]];
-                    kwadrat.push(tablica[j][1]);
-                    kwadrat.push(tablica[j][2]);
-                  }, j);
-                } else if (kol < 6) {
-                  zakres(6, 8).forEach(function() {
-                    kwadrat = [tablica[j][3]];
-                    kwadrat.push(tablica[j][4]);
-                    kwadrat.push(tablica[j][5]);
-                  }, j);
-                } else {
-                  zakres(6, 8).forEach(function() {
-                    kwadrat = [tablica[j][6]];
-                    kwadrat.push(tablica[j][7]);
-                    kwadrat.push(tablica[j][8]);
-                  }, j);
-                }
-              }
-              // eslint-disable-next-line max-len
-              if (!kwadrat[0].includes(wartosc) && !kwadrat[1].includes(wartosc) && !kwadrat[2].includes(wartosc)) {
-                tablica[rzad][kol] = wartosc;
-                if (sprawdz(tablica)) {
-                  licznik += 1;
-                  throw BreakException;
-                } else {
-                  if (rozwiaz(tablica)) {
-                    return true;
-                  }
-                }
-              }
-            }
-          }
-        }, wartosc);
-      } catch (e) {
-        if (e !== BreakException) throw e;
-      }
-      break;
-    }
-  }
-  tablica[rzad][kol] = 0;
-}
-
-/**
- * Próbuje wypełnić tablicę sudoku
- * @param {int[]} tablica Tablica sudoku
- */
-function wypelnij(tablica) {
-  for (i = 0; i < 81; i++) {
-    rzad = Math.floor(i / 9);
-    kol = i % 9;
-    if (tablica[rzad][kol] == 0) {
-      mieszaj(liczby);
-      liczby.forEach(function() {
-        if (!tablica[rzad].includes(wartosc)) {
+function fillGrid() {
+  // Find next empty cell
+  // Znajduje następną pustą komórkę
+  let row;
+  let col;
+  for (let i = 0; i < 81; i++) {
+    // Integer division
+    // Dzielenie całkowite
+    row = Math.floor(i / 9);
+    col = i % 9;
+    if (grid[row][col] == 0) {
+      numberList = shuffle(numberList);
+      numberList.forEach(function(value) {
+        // Check that this value has not already been used in this row
+        // Sprawdza czy wartość nie została jeszcze wykorzystana w wierszu
+        if (!grid[row].includes(value)) {
+          // Check that this value has not already be used on this column
+          // Sprawdza czy wartość nie została jeszcze wykorzystana w kolumnie
           // eslint-disable-next-line max-len
-          if (wartosc !== tablica[0][kol] && wartosc !== tablica[1][kol] && wartosc !== tablica[2][kol] && wartosc !== tablica[3][kol] && wartosc !== tablica[4][kol] && wartosc !== tablica[5][kol] && wartosc !== tablica[6][kol] && wartosc !== tablica[7][kol] && wartosc !== tablica[8][kol]) {
-            kwadrat = [];
-            if (rzad < 3) {
-              if (kol < 3) {
-                zakres(0, 2).forEach(function() {
-                  kwadrat = [tablica[j][0]];
-                  kwadrat.push(tablica[j][1]);
-                  kwadrat.push(tablica[j][2]);
-                }, j);
-              } else if (kol < 6) {
-                zakres(0, 2).forEach(function() {
-                  kwadrat = [tablica[j][3]];
-                  kwadrat.push(tablica[j][4]);
-                  kwadrat.push(tablica[j][5]);
-                }, j);
-              } else {
-                zakres(0, 2).forEach(function() {
-                  kwadrat = [tablica[j][6]];
-                  kwadrat.push(tablica[j][7]);
-                  kwadrat.push(tablica[j][8]);
-                }, j);
-              }
-            } else if (rzad < 6) {
-              if (kol < 3) {
-                zakres(3, 5).forEach(function() {
-                  kwadrat = [tablica[j][0]];
-                  kwadrat.push(tablica[j][1]);
-                  kwadrat.push(tablica[j][2]);
-                }, j);
-              } else if (kol < 6) {
-                zakres(3, 5).forEach(function() {
-                  kwadrat = [tablica[j][3]];
-                  kwadrat.push(tablica[j][4]);
-                  kwadrat.push(tablica[j][5]);
-                }, j);
-              } else {
-                zakres(3, 5).forEach(function() {
-                  kwadrat = [tablica[j][6]];
-                  kwadrat.push(tablica[j][7]);
-                  kwadrat.push(tablica[j][8]);
-                }, j);
-              }
-            } else {
-              if (kol < 3) {
-                zakres(6, 8).forEach(function() {
-                  kwadrat = [tablica[j][0]];
-                  kwadrat.push(tablica[j][1]);
-                  kwadrat.push(tablica[j][2]);
-                }, j);
-              } else if (kol < 6) {
-                zakres(6, 8).forEach(function() {
-                  kwadrat = [tablica[j][3]];
-                  kwadrat.push(tablica[j][4]);
-                  kwadrat.push(tablica[j][5]);
-                }, j);
-              } else {
-                zakres(6, 8).forEach(function() {
-                  kwadrat = [tablica[j][6]];
-                  kwadrat.push(tablica[j][7]);
-                  kwadrat.push(tablica[j][8]);
-                }, j);
+          if (![grid[0][col], grid[1][col], grid[2][col], grid[3][col], grid[4][col], grid[5][col], grid[6][col], grid[7][col], grid[8][col]].includes(value)) {
+            const squareRow = Math.floor(row / 3) * 3;
+            const squareCol = Math.floor(col / 3) * 3;
+            // Check if the value has not appeared in this square
+            // Sprawdza czy wartość nie została jeszcze wykorzystana w kwadracie
+            let isSquareOK = true;
+            for (let r = 0; r < 3; r++) {
+              for (let c = 0; c < 3; c++) {
+                if (grid[squareRow + r][squareCol + c] == value) {
+                  isSquareOK = false;
+                }
               }
             }
-            // eslint-disable-next-line max-len
-            if (!kwadrat[0].includes(wartosc) && !kwadrat[1].includes(wartosc) && !kwadrat[2].includes(wartosc)) {
-              tablica[rzad][kol] = wartosc;
-              if (sprawdz(tablica)) {
+            if (isSquareOK) {
+              grid[row][col] = value;
+              if (checkGrid()) {
                 return true;
               } else {
-                if (wypelnij(tablica)) {
+                // Recursion
+                // Rekurencja
+                if (fillGrid()) {
                   return true;
                 }
               }
             }
           }
         }
-      }, wartosc);
+      });
       break;
     }
   }
-  tablica[rzad][kol] = 0;
+  if (filled) {
+    return true;
+  }
+  // If recursion brings us back to this spot,
+  // last value must have been incorrect, so reset it
+  // Jeżeli przez rekurencję znajdziemy się w tym miejscu,
+  // ostatnia wartość musiała być niewłaściwa, więc czyścimy komórkę
+  grid[row][col] = 0;
 }
 
-wypelnij(tablica);
-
-puste = 5;
-licznik = 1;
-let backup;
-
-while (puste > 0) {
-  rzad = Math.floor(Math.random() * 9);
-  kol = Math.floow(Math.random() * 9);
-  while (tablica[rzad][kol] == 0) {
-    rzad = Math.floor(Math.random() * 9);
-    kol = Math.floow(Math.random() * 9);
-  }
-  backup = tablica[rzad][kol];
-  tablica[rzad][kol] = 0;
-  kopia = [];
-  zakres(0, 8).forEach(function() {
-    kopia.append([]);
-    zakres(0, 8).forEach(function() {
-      kopia[r].append(tablica[r][k]);
-    }, k);
-  }, r);
-  licznik = 0;
-  rozwiaz(kopia);
-  if (licznik !== 1) {
-    tablica[rzad][kol] = kopia;
-    puste -= 1;
-  }
-}
+initGrid();
+fillGrid();
+console.log(grid);
