@@ -1,0 +1,24 @@
+{
+  "name": "sudokugen",
+  "version": "1.0.0",
+  "description": "Generate a sudoku and display it on a simple website",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/2l42h3r/SudokuGen.git"
+  },
+  "author": "Sl4sher",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/2l42h3r/SudokuGen/issues"
+  },
+  "homepage": "https://github.com/2l42h3r/SudokuGen#readme",
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-google": "^0.13.0"
+  }
+}
