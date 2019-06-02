@@ -7,7 +7,7 @@ let filled = false;
  * Tworzy pustą (wypełnioną zerami) tablicę 9x9
  */
 function initGrid() {
-  for (i = 0; i < 9; i++) {
+  for (let i = 0; i < 9; i++) {
     grid.push([0, 0, 0, 0, 0, 0, 0, 0, 0]);
   }
 }
@@ -120,6 +120,36 @@ function fillGrid() {
   grid[row][col] = 0;
 }
 
+/**
+ * Prints the grid in a readable format
+ * Drukuje sudoku w czytelnym formacie
+ */
+function printGrid() {
+  let out = '\n';
+  for (let i = 0; i<9; i++) {
+    if (i != 0) {
+      out = '';
+    }
+    for (let j = 0; j<9; j++) {
+      out = out + grid[i][j].toString();
+      if (j == 2 || j == 5) {
+        out = out + ' | ';
+      } else if (j == 8) {
+        continue;
+      } else {
+        out = out + ' ';
+      }
+    }
+    if (i == 8) {
+      out = out + '\n';
+    }
+    console.log(out);
+    if (i == 2 || i == 5) {
+      console.log('---------------------');
+    }
+  }
+}
+
 initGrid();
 fillGrid();
-console.log(grid);
+printGrid();
